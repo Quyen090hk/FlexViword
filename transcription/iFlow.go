@@ -19,7 +19,8 @@ type OpenAIResponse struct {
 }
 
 // TranscribeWithAPI 调用 SiliconFlow API 进行转录
-func TranscribeWithAPI(apiKey string, audioPath string) (string, error) {
+// model 由前端设置透传（与浏览器端 siliconflow 引擎保持同一参数来源）
+func TranscribeWithAPI(apiKey string, model string, audioPath string) (string, error) {
 	// 1. 打开音频文件
 	file, err := os.Open(audioPath)
 	if err != nil {
@@ -41,9 +42,10 @@ func TranscribeWithAPI(apiKey string, audioPath string) (string, error) {
 		return "", err
 	}
 
-	// --- 修改点 1: 指定模型为 SenseVoiceSmall ---
-	// SiliconFlow 支持的模型 ID
-	_ = writer.WriteField("model", "FunAudioLLM/SenseVoiceSmall")
+	if model == "" {
+		model = "FunAudioLLM/SenseVoiceSmall"
+	}
+	_ = writer.WriteField("model", model)
 
 	// 关闭 writer
 	err = writer.Close()
