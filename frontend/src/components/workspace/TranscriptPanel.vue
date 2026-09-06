@@ -8,7 +8,13 @@ import { useUiStore } from '@/stores/ui'
 import { useVirtualList } from '@/composables/useVirtualList'
 import { t } from '@/i18n'
 import { formatDuration } from '@/utils/time'
-import { buildExport, downloadText, buildPlainText } from '@/utils/exporters'
+import {
+  buildExport,
+  downloadText,
+  buildPlainText,
+  FORMAT_TIMESTAMP_POLICY,
+  FORMAT_DEFAULT_TIMESTAMPS,
+} from '@/utils/exporters'
 import AppButton from '@/components/common/AppButton.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import Icon from '@/components/common/Icon.vue'
@@ -35,10 +41,25 @@ const editingId = ref<string | null>(null)
 const draft = ref('')
 const preview = ref<{
   format: ExportFormat
-  content: string
   filename: string
   mime: string
 } | null>(null)
+/** 导出是否包含时间戳（仅 optional 格式可切换；required 格式固定为 true） */
+const withTimestamps = ref(true)
+const exportOptions = computed(() => ({ includeTimestamps: withTimestamps.value }))
+
+/** 预览内容实时重生成：模态框里切换时间戳开关立即反映 */
+const previewContent = computed(() => {
+  const p = preview.value
+  if (!p) return ''
+  return buildExport(p.format, task.value?.name ?? '', task.value?.meta, segments.value, {
+    includeTimestamps: withTimestamps.value,
+  }).content
+})
+
+const timestampSwitchable = computed(
+  () => preview.value !== null && FORMAT_TIMESTAMP_POLICY[preview.value.format] === 'optional',
+)
 
 const task = computed(() => tasks.currentTask)
 const segments = computed<TranscriptSegment[]>(() => task.value?.segments ?? [])
@@ -123,18 +144,21 @@ const EXPORTS: { format: ExportFormat; key: string }[] = [
 function requestExport(format: ExportFormat): void {
   const current = task.value
   if (!current?.segments?.length) return
-  const { filename, content, mime } = buildExport(
+  const { filename, mime } = buildExport(
     format,
     current.name,
     current.meta,
     current.segments,
+    exportOptions.value,
   )
-  preview.value = { format, content, filename, mime }
+  // 时间戳偏好按格式重置为默认值（SRT/VTT 固定带，TXT 默认关、MD 默认开）
+  withTimestamps.value = FORMAT_DEFAULT_TIMESTAMPS[format]
+  preview.value = { format, filename, mime }
 }
 
 function confirmExport(): void {
   if (!preview.value) return
-  downloadText(preview.value.filename, preview.value.content, preview.value.mime)
+  downloadText(preview.value.filename, previewContent.value, preview.value.mime)
   ui.toast('success', t('toast.exported', { filename: preview.value.filename }))
   preview.value = null
 }
@@ -267,7 +291,23 @@ async function copyAll(): Promise<void> {
       wide
       @close="preview = null"
     >
-      <pre v-if="preview" class="preview">{{ preview.content }}</pre>
+      <div v-if="preview" class="preview-tools">
+        <label v-if="timestampSwitchable" class="ts-toggle">
+          <button
+            type="button"
+            class="switch"
+            :class="{ on: withTimestamps }"
+            role="switch"
+            :aria-checked="withTimestamps"
+            @click="withTimestamps = !withTimestamps"
+          >
+            <span class="knob" />
+          </button>
+          {{ t('export.includeTimestamps') }}
+        </label>
+        <span v-else class="ts-locked">{{ t('export.timestampsRequired') }}</span>
+      </div>
+      <pre v-if="preview" class="preview">{{ previewContent }}</pre>
       <template #footer>
         <AppButton variant="subtle" @click="preview = null">{{ t('common.cancel') }}</AppButton>
         <AppButton variant="primary" @click="confirmExport">
@@ -367,6 +407,60 @@ async function copyAll(): Promise<void> {
   50% {
     opacity: 0.4;
   }
+}
+
+.preview-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 2px 2px;
+}
+
+.ts-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.ts-locked {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.switch {
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-soft);
+  position: relative;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.switch .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: all var(--dur-fast) var(--ease-spring);
+}
+
+.switch.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switch.on .knob {
+  left: 18px;
+  background: var(--accent-contrast);
 }
 
 .preview {

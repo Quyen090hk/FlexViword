@@ -175,7 +175,8 @@ export const enUS: typeof zhCN = {
     linkPlaceholder: 'Paste a video/audio link (YouTube, Bilibili… needs local yt-dlp)',
     linkDownloading: 'Downloading linked media…',
     linkFailed: 'Link download failed: {message}',
-    linkRiskControl: 'Blocked by Bilibili risk control — retry later, or log into Bilibili in a browser and export cookies for yt-dlp',
+    linkRiskControl:
+      'Blocked by Bilibili risk control — retry later, or log into Bilibili in a browser and export cookies for yt-dlp',
     linkNeedYtdlp: 'yt-dlp not found — install it and retry (github.com/yt-dlp/yt-dlp)',
     batchAdded: 'Added {count} task(s)',
   },
@@ -186,6 +187,10 @@ export const enUS: typeof zhCN = {
     export: 'One-click export to SRT / VTT / TXT / Markdown',
     i18n: 'Bilingual UI (zh/en) with dark & light themes, applied instantly',
     cross: 'One codebase for the browser and the Wails desktop shell',
+  },
+  export: {
+    includeTimestamps: 'Include timestamps',
+    timestampsRequired: 'Timestamps are mandatory in this subtitle format',
   },
   palette: {
     title: 'Command palette',

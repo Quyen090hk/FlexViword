@@ -47,6 +47,35 @@ describe('buildExport', () => {
     const result = buildExport('txt', 'lecture.mp4', meta, segments)
     expect(result.filename).toBe('lecture.txt')
   })
+
+  it('txt omits timestamps by default and includes them on request', () => {
+    const plain = buildExport('txt', 'x.mp4', meta, segments).content
+    expect(plain).not.toContain('[')
+    const withTs = buildExport('txt', 'x.mp4', meta, segments, {
+      includeTimestamps: true,
+    }).content
+    expect(withTs).toContain('[0:00 → 0:02] 第一句')
+    expect(withTs).toContain('[0:02 → 0:05] 第二句')
+  })
+
+  it('md switches between time table and plain list', () => {
+    const table = buildExport('md', 'x.mp4', meta, segments).content
+    expect(table).toContain('| 时间 | 内容 |')
+    const list = buildExport('md', 'x.mp4', meta, segments, {
+      includeTimestamps: false,
+    }).content
+    expect(list).toContain('- 第一句')
+    expect(list).not.toContain('| 时间 |')
+  })
+
+  it('srt/vtt keep timestamps regardless of the option (format requirement)', () => {
+    for (const format of ['srt', 'vtt'] as const) {
+      const result = buildExport(format, 'x.mp4', meta, segments, {
+        includeTimestamps: false,
+      }).content
+      expect(result).toContain(' --> ')
+    }
+  })
 })
 
 describe('downloadText', () => {

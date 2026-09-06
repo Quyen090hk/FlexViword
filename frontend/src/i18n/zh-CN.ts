@@ -183,6 +183,10 @@ export const zhCN = {
     i18n: '中英双语与深浅主题，切换即时生效',
     cross: '同一套代码运行于浏览器与 Wails 桌面壳',
   },
+  export: {
+    includeTimestamps: '包含时间戳',
+    timestampsRequired: '该字幕格式固定包含时间戳',
+  },
   palette: {
     title: '命令面板',
     placeholder: '搜索命令，或输入关键词…',
