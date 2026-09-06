@@ -1,34 +1,78 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup lang="ts">
+import SideNav from '@/components/layout/SideNav.vue'
+import ToastHost from '@/components/common/ToastHost.vue'
+import CommandPalette from '@/components/common/CommandPalette.vue'
+import { useUiStore } from '@/stores/ui'
+import { useHotkeys } from '@/composables/useHotkeys'
+
+const ui = useUiStore()
+
+// ⌘K / Ctrl+K：全局命令面板（输入框聚焦时也响应）
+useHotkeys([{ key: 'mod+k', allowInInput: true, handler: () => ui.togglePalette() }])
 </script>
 
 <template>
-  <div class="app-container">
-    <img id="logo" alt="FlexViword logo" src="./assets/images/logo-universal.png"/>
-    <HelloWorld/>
+  <div class="app-shell">
+    <SideNav />
+    <main class="content">
+      <RouterView v-slot="{ Component }">
+        <Transition name="page" mode="out-in">
+          <component :is="Component" :key="$route.path" />
+        </Transition>
+      </RouterView>
+    </main>
+    <CommandPalette />
+    <ToastHost />
+    <div class="noise-layer" aria-hidden="true" />
   </div>
 </template>
 
-<style>
-.app-container {
+<style scoped>
+.app-shell {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 40px;
-  min-height: 100vh;
-  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
 }
 
-#logo {
-  display: block;
-  width: 120px;
-  height: auto;
-  margin-bottom: 30px;
-  filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4));
-  transition: transform 0.3s ease;
+.content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 28px 32px 48px;
 }
 
-#logo:hover {
-  transform: scale(1.05);
+@media (max-width: 720px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 18px 16px 40px;
+  }
+}
+</style>
+
+<style>
+/* 路由页面切换：只动 opacity / transform */
+.page-enter-active {
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+
+.page-leave-active {
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 </style>

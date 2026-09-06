@@ -1,3 +1,21 @@
+# 桌面构建产物
 build/bin
-node_modules
-frontend/dist
+
+# 依赖与构建
+node_modules/
+frontend/dist/
+frontend/coverage/
+
+# 日志与临时文件
+*.log
+.dev-server.log
+
+# 编辑器与系统文件
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# 本地环境
+*.local

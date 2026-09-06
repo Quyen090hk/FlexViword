@@ -1,0 +1,86 @@
+/*
+ * FlexViword 设计令牌 —— 「PUNK RED」主题（女神异闻录风格）
+ * 视觉母题：红黑白三色 / 平行四边形 / 半调网点 / 硬投影 / 斜切粗黑标题。
+ * 大胆只花在 chrome 层（按钮/导航/标题/进度），内容区保持安静可读。
+ * 底线不放弃：正文对比度 ≥4.5:1、prefers-reduced-motion、键盘焦点可见。
+ */
+
+:root {
+  /* 中性色（近黑阶，dark 默认） */
+  --bg: #0a0a0c;
+  --bg-soft: #101013;
+  --panel: #161619;
+  --panel-hover: #1d1d21;
+  --border: #26262b;
+  --border-strong: #3a3a41;
+  --text: #f2f2f3;
+  --text-muted: #a0a0ab;
+  /* 面板背景上 ≥4.5:1（WCAG AA 正文） */
+  --text-faint: #8a8a96;
+
+  /* 主色（女神异闻录红） */
+  --accent: #e60012;
+  --accent-strong: #ff2438;
+  --accent-deep: #b8000e;
+  --accent-soft: rgba(230, 0, 18, 0.16);
+  --accent-contrast: #ffffff;
+  /* 强调黄：仅用于装饰性星形/高亮，从不作小字文本色 */
+  --highlight: #ffd600;
+
+  /* 语义色 */
+  --success: #2fd06a;
+  --danger: #ff4d4d;
+  --warning: #fbbf24;
+
+  /* 硬投影：贴纸/漫画感的位移阴影，替代多层柔影 */
+  --shadow: 6px 6px 0 rgba(230, 0, 18, 0.55);
+  --shadow-sm: 3px 3px 0 rgba(0, 0, 0, 0.85);
+  --shadow-panel: 4px 4px 0 rgba(0, 0, 0, 0.6);
+
+  /* 锐利半径：punk 语言不用大圆角 */
+  --radius-sm: 3px;
+  --radius: 5px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --sidebar-width: 232px;
+
+  /* 字体：Space Grotesk 做 display（配合 oblique 使用），正文交给系统栈（含 CJK） */
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', var(--font-sans);
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'HarmonyOS Sans SC',
+    'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+
+  /* 倾斜角：平行四边形 chrome 的统一斜度 */
+  --skew: -8deg;
+  --unskew: 8deg;
+
+  /* 动效令牌：只动 transform/opacity；禁止 linear */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+}
+
+[data-theme='light'] {
+  --bg: #f6f5f4;
+  --bg-soft: #ecebe9;
+  --panel: #ffffff;
+  --panel-hover: #f4f3f1;
+  --border: #e2e1de;
+  --border-strong: #c6c5c1;
+  --text: #141416;
+  --text-muted: #55555c;
+  --text-faint: #6e6e76;
+
+  --accent: #d90429;
+  --accent-strong: #b8000e;
+  --accent-deep: #9d0009;
+  --accent-soft: rgba(217, 4, 41, 0.1);
+  --accent-contrast: #ffffff;
+
+  --shadow: 5px 5px 0 rgba(217, 4, 41, 0.5);
+  --shadow-sm: 3px 3px 0 rgba(20, 20, 22, 0.22);
+  --shadow-panel: 4px 4px 0 rgba(20, 20, 22, 0.14);
+}

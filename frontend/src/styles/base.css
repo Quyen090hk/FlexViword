@@ -1,0 +1,248 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+/* 页面标题：斜切粗黑 + 红色斜杠下划线（Persona 标题语言） */
+.content h2 {
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.content h2::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  bottom: 0;
+  width: 46px;
+  height: 4px;
+  background: var(--accent);
+  transform: skewX(var(--skew));
+}
+
+/* 半调网点：装饰区的漫画质感（颜色跟随主题主色） */
+.halftone {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--accent) 42%, transparent) 1.2px,
+    transparent 1.7px
+  );
+  background-size: 9px 9px;
+}
+
+/* 星形爆点：空态/关于页的装饰母题 */
+.starburst {
+  clip-path: polygon(
+    100% 50%,
+    83% 59%,
+    93% 75%,
+    74% 74%,
+    75% 93%,
+    59% 83%,
+    50% 100%,
+    41% 83%,
+    25% 93%,
+    26% 74%,
+    7% 75%,
+    17% 59%,
+    0% 50%,
+    17% 41%,
+    7% 25%,
+    26% 26%,
+    25% 7%,
+    41% 17%,
+    50% 0%,
+    59% 17%,
+    75% 7%,
+    74% 26%,
+    93% 25%,
+    83% 41%
+  );
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 细滚动条 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 全局细颗粒噪点：fixed + pointer-events:none，给界面一层"纸感" */
+.noise-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 通用过渡：只动 opacity / transform */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity var(--dur) var(--ease-out);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.pop-enter-active {
+  transition:
+    opacity var(--dur) var(--ease-spring),
+    transform var(--dur) var(--ease-spring);
+}
+
+.pop-leave-active {
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.slide-fade-enter-active {
+  transition: all var(--dur) var(--ease-out);
+}
+
+.slide-fade-leave-active {
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-8px);
+  opacity: 0;
+}
+
+.toast-enter-active {
+  transition: all var(--dur) var(--ease-spring);
+}
+
+.toast-leave-active {
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 尊重系统"减少动态效果"偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
