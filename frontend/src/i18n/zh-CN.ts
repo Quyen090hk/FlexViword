@@ -171,6 +171,7 @@ export const zhCN = {
     linkPlaceholder: '粘贴视频/音频链接（YouTube、B站等，需本机 yt-dlp）',
     linkDownloading: '正在下载链接媒体…',
     linkFailed: '链接下载失败：{message}',
+    linkRiskControl: 'B站风控拦截：请稍后重试，或在浏览器登录B站后导出 cookie 配合 yt-dlp 使用',
     linkNeedYtdlp: '未检测到 yt-dlp：请安装后重试（github.com/yt-dlp/yt-dlp）',
     batchAdded: '已加入 {count} 个任务',
   },

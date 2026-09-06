@@ -175,6 +175,7 @@ export const enUS: typeof zhCN = {
     linkPlaceholder: 'Paste a video/audio link (YouTube, Bilibili… needs local yt-dlp)',
     linkDownloading: 'Downloading linked media…',
     linkFailed: 'Link download failed: {message}',
+    linkRiskControl: 'Blocked by Bilibili risk control — retry later, or log into Bilibili in a browser and export cookies for yt-dlp',
     linkNeedYtdlp: 'yt-dlp not found — install it and retry (github.com/yt-dlp/yt-dlp)',
     batchAdded: 'Added {count} task(s)',
   },

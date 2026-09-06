@@ -28,16 +28,26 @@ func WithYtDlp(mediaURL string, destDir string) (string, error) {
 	}
 
 	outputTemplate := filepath.Join(destDir, "%(title)s.%(ext)s")
-	cmd := exec.Command(
-		"yt-dlp",
+
+	args := []string{
 		"-f", "bv*+ba/b",
 		"--merge-output-format", "mp4",
 		"--no-playlist",
 		"--newline",
 		"-o", outputTemplate,
-		"--print", "after_move:filepath",
-		mediaURL,
-	)
+	}
+
+	// B站反爬要求携带匿名 cookie（buvid3），自动配置
+	cookieFile, err := ensureBilibiliCookies(mediaURL)
+	if err != nil {
+		return "", err
+	}
+	if cookieFile != "" {
+		args = append(args, "--cookies", cookieFile)
+	}
+
+	args = append(args, "--print", "after_move:filepath", mediaURL)
+	cmd := exec.Command("yt-dlp", args...)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -48,6 +58,10 @@ func WithYtDlp(mediaURL string, destDir string) (string, error) {
 		trimmed := strings.TrimSpace(string(output))
 		if len(trimmed) > 400 {
 			trimmed = trimmed[len(trimmed)-400:] // 保留尾部错误摘要
+		}
+		// B站风控（412）：对同一 IP 的高频访问会临时标记，需稍后重试或登录态 cookie
+		if strings.Contains(trimmed, "412") && isBilibiliURL(mediaURL) {
+			return "", fmt.Errorf("bilibili risk control: %s", trimmed)
 		}
 		return "", fmt.Errorf("下载失败: %s", trimmed)
 	}

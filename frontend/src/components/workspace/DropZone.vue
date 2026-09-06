@@ -107,10 +107,13 @@ async function importLink(): Promise<void> {
     linkURL.value = ''
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    ui.toast(
-      'error',
-      message.includes('yt-dlp') ? t('input.linkNeedYtdlp') : t('input.linkFailed', { message }),
-    )
+    if (message.includes('yt-dlp not found')) {
+      ui.toast('error', t('input.linkNeedYtdlp'))
+    } else if (message.includes('bilibili risk control')) {
+      ui.toast('error', t('input.linkRiskControl'))
+    } else {
+      ui.toast('error', t('input.linkFailed', { message }))
+    }
   } finally {
     linkBusy.value = false
   }
