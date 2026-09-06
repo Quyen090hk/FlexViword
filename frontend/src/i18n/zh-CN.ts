@@ -59,6 +59,8 @@ export const zhCN = {
     edited: '已编辑',
     edit: '编辑字幕',
     autoscroll: '跟随播放',
+    subtitleOverlay: '视频内实时字幕',
+    subtitleOverlayDesc: '播放时把当前句叠加在画面底部，无需外挂播放器',
     export: '导出',
     copyAll: '复制全文',
     playerMissing: '当前浏览器无法预览该视频，可直接查看字幕',

@@ -35,6 +35,7 @@ export const useSettingsStore = defineStore('settings', () => {
       safe.localLanguage = stored.localLanguage as TranscriptionSettings['localLanguage']
     if (typeof stored.autoScrollTranscript === 'boolean')
       safe.autoScrollTranscript = stored.autoScrollTranscript
+    if (typeof stored.subtitleOverlay === 'boolean') safe.subtitleOverlay = stored.subtitleOverlay
   }
 
   const settings = ref<TranscriptionSettings>({ ...DEFAULT_SETTINGS, ...safe })

@@ -182,6 +182,20 @@ async function clearData(): Promise<void> {
         </button>
       </div>
       <p class="desc">{{ t('settings.autoScrollDesc') }}</p>
+      <div class="inline-field">
+        <span class="label">{{ t('workspace.subtitleOverlay') }}</span>
+        <button
+          type="button"
+          class="switch"
+          :class="{ on: settings.settings.subtitleOverlay }"
+          role="switch"
+          :aria-checked="settings.settings.subtitleOverlay"
+          @click="settings.update({ subtitleOverlay: !settings.settings.subtitleOverlay })"
+        >
+          <span class="knob" />
+        </button>
+      </div>
+      <p class="desc">{{ t('workspace.subtitleOverlayDesc') }}</p>
     </section>
 
     <section class="group">

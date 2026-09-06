@@ -25,6 +25,8 @@ export interface TranscriptionSettings {
   locale: LocaleCode
   /** 播放时字幕列表自动跟随高亮滚动 */
   autoScrollTranscript: boolean
+  /** 播放时把当前句叠加渲染到视频画面内（省去外挂播放器环节） */
+  subtitleOverlay: boolean
 }
 
 export const DEFAULT_BASE_URL = '/api/siliconflow/v1/audio/transcriptions'
@@ -47,4 +49,5 @@ export const DEFAULT_SETTINGS: TranscriptionSettings = {
   theme: 'dark',
   locale: 'zh-CN',
   autoScrollTranscript: true,
+  subtitleOverlay: true,
 }

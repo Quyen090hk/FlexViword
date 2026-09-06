@@ -8,6 +8,7 @@ import { findSegmentIndexAt } from '@/composables/useActiveSegment'
 import { t } from '@/i18n'
 import { formatDuration } from '@/utils/time'
 import { PLAYBACK_RATES } from '@/config/constants'
+import { useSettingsStore } from '@/stores/settings'
 import EmptyState from '@/components/common/EmptyState.vue'
 import Icon from '@/components/common/Icon.vue'
 
@@ -20,6 +21,7 @@ import Icon from '@/components/common/Icon.vue'
  */
 const tasks = useTasksStore()
 const player = usePlayerStore()
+const settings = useSettingsStore()
 
 const videoEl = ref<HTMLVideoElement | null>(null)
 const source = useVideoSource(computed(() => tasks.currentTask))
@@ -104,8 +106,13 @@ watch(
   },
 )
 
+function toggleOverlay(): void {
+  settings.update({ subtitleOverlay: !settings.settings.subtitleOverlay })
+}
+
 useHotkeys([
   { key: ' ', handler: togglePlay },
+  { key: 'c', handler: toggleOverlay },
   { key: 'arrowleft', handler: () => seekBy(-5) },
   { key: 'arrowright', handler: () => seekBy(5) },
 ])
@@ -114,6 +121,15 @@ useHotkeys([
 <template>
   <div class="player-card">
     <div class="screen">
+      <Transition name="caption" mode="out-in">
+        <p
+          v-if="settings.settings.subtitleOverlay && source.url && activeCaption"
+          :key="activeCaption"
+          class="screen-caption"
+        >
+          {{ activeCaption }}
+        </p>
+      </Transition>
       <video
         v-if="source.url"
         ref="videoEl"
@@ -146,9 +162,26 @@ useHotkeys([
 
     <div class="sub-bar">
       <Transition name="caption" mode="out-in">
-        <p :key="activeCaption" class="caption">{{ activeCaption || '—' }}</p>
+        <p
+          v-if="!(settings.settings.subtitleOverlay && source.url)"
+          :key="activeCaption"
+          class="caption"
+        >
+          {{ activeCaption || '—' }}
+        </p>
       </Transition>
       <div class="controls">
+        <button
+          class="cc-toggle"
+          :class="{ on: settings.settings.subtitleOverlay }"
+          type="button"
+          :aria-label="t('workspace.subtitleOverlay')"
+          :aria-pressed="settings.settings.subtitleOverlay"
+          :title="t('workspace.subtitleOverlay') + ' (C)'"
+          @click="toggleOverlay"
+        >
+          <Icon name="captions" :size="15" />
+        </button>
         <label class="rate">
           <Icon name="gauge" :size="13" />
           <select v-model.number="rate" aria-label="playback rate">
@@ -179,6 +212,58 @@ useHotkeys([
   aspect-ratio: 16 / 9;
   display: grid;
   position: relative;
+}
+
+/* 画面内实时字幕：白字 + 多向黑描边（经典字幕观感），底部居中 */
+.screen-caption {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  max-width: 88%;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.18rem;
+  line-height: 1.4;
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000,
+    0 0 8px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  padding: 2px 10px;
+}
+
+.cc-toggle {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 28px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.cc-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.cc-toggle.on {
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.bar-placeholder {
+  flex: 1;
 }
 
 .audio-overlay {

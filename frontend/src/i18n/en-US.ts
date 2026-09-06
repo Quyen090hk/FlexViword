@@ -62,6 +62,8 @@ export const enUS: typeof zhCN = {
     edited: 'edited',
     edit: 'Edit segment',
     autoscroll: 'Follow playback',
+    subtitleOverlay: 'On-video subtitles',
+    subtitleOverlayDesc: 'Overlay the current sentence onto the video — no external player needed',
     export: 'Export',
     copyAll: 'Copy all',
     playerMissing: 'This video cannot be previewed here, but the transcript is available',
